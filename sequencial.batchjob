@@ -1,0 +1,28 @@
+#!/bin/bash
+#SBATCH -t 20
+#SBATCH --exclusive
+#SBATCH --no-requeue
+#SBATCH -o %x.%j.out
+#SBATCH -D /home/pp03003/t2-paralela
+
+# Parameters:
+# $1 - Number of Open MP threads (2, 4, 8, 16)
+
+echo Running on host `hostname`.
+echo Initial time is `date`.
+echo Directory is `pwd`
+
+echo This job runs on the following nodes:
+echo $SLURM_JOB_NODELIST
+
+echo Job ID:
+echo $SLURM_JOB_ID
+
+# Set number of threads.
+export OMP_NUM_THREADS=$1
+
+rm -f sequencial
+gcc sequencial.c -o sequencial -fopenmp
+./sum-standard > "saida-sequencial.out" 2> "tempo-total-sequencial.out"
+
+echo Final time is `date`.
