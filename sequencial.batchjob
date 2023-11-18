@@ -22,7 +22,7 @@ echo $SLURM_JOB_ID
 export OMP_NUM_THREADS=$1
 
 rm -f sequencial
-gcc sequencial.c -o sequencial -fopenmp
+mpicc sequencial.c -o sequencial-1500 -DSIZE=1500
 ./sum-standard > "saida-sequencial.out" 2> "tempo-total-sequencial.out"
 
 echo Final time is `date`.
