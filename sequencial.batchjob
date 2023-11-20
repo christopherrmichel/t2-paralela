@@ -8,7 +8,7 @@
 #SBATCH --mail-user=example@edu.pucrs.br
 #SBATCH --no-requeue
 #SBATCH -o %x.%j.out
-#SBATCH -D /home/pp03003/mpi/trabalho2
+#SBATCH -D /home/pp03009/mpi/trabalho2
 ################
 echo Running on host `hostname`
 echo Initial Time is `date`
@@ -18,4 +18,4 @@ echo $SLURM_JOB_NODELIST
 echo JOB_ID:
 echo $SLURM_JOBID
 echo ################
-mpirun -np 1 ./sequencial > teste.txt
+mpirun -np 1 ./sequencial-1500 > teste.txt
