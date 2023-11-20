@@ -1,28 +1,21 @@
 #!/bin/bash
-#SBATCH -t 20
+#SBATCH --ntasks 1
+#SBATCH --nodes 1
+#SBATCH --ntasks-per-node=1
+#SBATCH -t 10
 #SBATCH --exclusive
+#SBATCH --mail-type=ALL
+#SBATCH --mail-user=example@edu.pucrs.br
 #SBATCH --no-requeue
 #SBATCH -o %x.%j.out
-#SBATCH -D /home/pp03003/t2-paralela
-
-# Parameters:
-# $1 - Number of Open MP threads (2, 4, 8, 16)
-
-echo Running on host `hostname`.
-echo Initial time is `date`.
+#SBATCH -D /home/pp03003/mpi/trabalho2
+################
+echo Running on host `hostname`
+echo Initial Time is `date`
 echo Directory is `pwd`
-
-echo This job runs on the following nodes:
+echo This jobs runs on the following nodes:
 echo $SLURM_JOB_NODELIST
-
-echo Job ID:
-echo $SLURM_JOB_ID
-
-# Set number of threads.
-export OMP_NUM_THREADS=$1
-
-rm -f sequencial
-mpicc sequencial.c -o sequencial-1500 -DSIZE=1500
-./sum-standard > "saida-sequencial.out" 2> "tempo-total-sequencial.out"
-
-echo Final time is `date`.
+echo JOB_ID:
+echo $SLURM_JOBID
+echo ################
+mpirun -np 1 ./sequencial > teste.txt
