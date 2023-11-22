@@ -55,7 +55,7 @@
 
 ################ Please, change this directory to your working dir.
 
-#SBATCH -D /home/pp03003/trabalho-2/T2-Prog-Paralela
+#SBATCH -D /home/pp03003/t2-paralela
 
 ################
 
