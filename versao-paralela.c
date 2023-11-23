@@ -124,45 +124,31 @@ int main(int argc, char *argv[]) {
     }
   }
   // Se for diferente de 0, significa que o processo é um escravo
-  else
-  {
-    // Recebe a matriz 2 inteira.
-    MPI_Bcast(m2, (SIZE * SIZE), MPI_INT, 0, MPI_COMM_WORLD);
+  else {
 
-    int qtdLinhas, numLinha;
+    int numeroDeLinhasPorProcesso;
+    int linhaInicialDoProcesso;
 
-    // RECEIVE-NUMERO DA LINHA A COMECAR
-    MPI_Recv(&numLinha, 1, MPI_INT, 0, 0, MPI_COMM_WORLD, &status);
-
-    // RECEIVE-QUANTIDADE DE LINHAS A PROCESSAR
-    MPI_Recv(&qtdLinhas, 1, MPI_INT, 0, 0, MPI_COMM_WORLD, &status);
-
-    // RECEIVE-LINHAS M1
-    MPI_Recv(&m1[numLinha][0], qtdLinhas * SIZE, MPI_INT, 0, 0, MPI_COMM_WORLD, &status);
+    //Receber m2 (todos recebem igual), qual linha começar, quantas linhas processar e sua parte da m1
+    MPI_Bcast(m2, pow(SIZE,2), MPI_INT, 0, MPI_COMM_WORLD);
+    MPI_Recv(&linhaInicialDoProcesso, 1, MPI_INT, 0, 0, MPI_COMM_WORLD, &status);
+    MPI_Recv(&numeroDeLinhasPorProcesso, 1, MPI_INT, 0, 0, MPI_COMM_WORLD, &status);
+    MPI_Recv(&m1[linhaInicialDoProcesso][0], numeroDeLinhasPorProcesso * SIZE, MPI_INT, 0, 0, MPI_COMM_WORLD, &status);
 
     // REALIZA A MULTIPLICACAO
-    // Utiliza OpenMP para paralelizar o loop.
-#pragma omp parallel for
-    for (int i = numLinha; i < numLinha + qtdLinhas; i++)
-    {
-      for (int j = 0; j < cres; j++)
-      {
+    for (i=0 ; i<lres; i++) {
+      for (j=0 ; j<cres; j++) {
         mres[i][j] = 0;
-        for (int k = 0; k < c1; k++)
-        {
+        for (k=0 ; k<c1; k++) {
           mres[i][j] += m1[i][k] * m2[k][j];
         }
       }
     }
 
-    // SEND-NUMERO DA LINHA A COMECAR
-    MPI_Send(&numLinha, 1, MPI_INT, 0, 0, MPI_COMM_WORLD);
-
-    // SEND-QUANTIDADE DE LINHAS A PROCESSAR
-    MPI_Send(&qtdLinhas, 1, MPI_INT, 0, 0, MPI_COMM_WORLD);
-
-    // SEND-LINHAS M RESULTANTE
-    MPI_Send(&mres[numLinha][0], qtdLinhas * SIZE, MPI_INT, 0, 0, MPI_COMM_WORLD);
+    //Após o cálculo, envia para o mestre a linha que o escravo começou a calcular, a quantidade de linhas calculadas e pedaço da matriz resultante
+    MPI_Send(&linhaInicialDoProcesso, 1, MPI_INT, 0, 0, MPI_COMM_WORLD);
+    MPI_Send(&numeroDeLinhasPorProcesso, 1, MPI_INT, 0, 0, MPI_COMM_WORLD);
+    MPI_Send(&mres[linhaInicialDoProcesso][0], numeroDeLinhasPorProcesso * SIZE, MPI_INT, 0, 0, MPI_COMM_WORLD);
   }
 
   MPI_Finalize();
