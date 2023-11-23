@@ -136,7 +136,6 @@ int main(int argc, char *argv[]) {
     MPI_Recv(&m1[linhaInicialDoProcesso][0], numeroDeLinhasPorProcesso * SIZE, MPI_INT, 0, 0, MPI_COMM_WORLD, &status);
 
     // REALIZA A MULTIPLICACAO
-    #pragma omp parallel for
     for (i=0 ; i<lres; i++) {
       for (j=0 ; j<cres; j++) {
         mres[i][j] = 0;
