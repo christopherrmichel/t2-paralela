@@ -65,7 +65,7 @@ int main(int argc, char *argv[]) {
     elapsed_time = -MPI_Wtime();
 
     // BROADCAST PARA ENVIAR A MATRIZ 2 INTEIRA PARA TODOS OS ESCRAVOS
-    MPI_Bcast(m2, tamanhoMatriz, MPI_INT, 0, MPI_COMM_WORLD);
+    MPI_Bcast(m2, (SIZE * SIZE), MPI_INT, 0, MPI_COMM_WORLD);
 
     // Loop para enviar partes da matriz 1 para os escravos.
     for (int i = 0; i < p - 1; ++i)
