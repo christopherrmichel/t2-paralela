@@ -76,7 +76,7 @@ echo ################
 ############# Commands...
 
 echo "2 nodos, 1 processo mestre, 2 processos escravos, um usando 15 threads e o outro usando 16 threads."
-mpirun -np 3 --map-by node ./paralelo >> output-paralelo.txt 2>> errors-paralelo.txt
+mpirun -np 3 --map-by node ./versao-paralela >> output-paralelo.txt 2>> errors-paralelo.txt
 
 ################
 
