@@ -129,19 +129,15 @@ int main(int argc, char *argv[]) {
     // Recebe a matriz 2 inteira.
     MPI_Bcast(m2, (SIZE * SIZE), MPI_INT, 0, MPI_COMM_WORLD);
 
-    int qtdLinhas, numLinha;
+    int numeroDeLinhasPorProcesso;
+    int linhaInicialDoProcesso;
 
-    // RECEIVE-NUMERO DA LINHA A COMECAR
-    MPI_Recv(&numLinha, 1, MPI_INT, 0, 0, MPI_COMM_WORLD, &status);
-
-    // RECEIVE-QUANTIDADE DE LINHAS A PROCESSAR
-    MPI_Recv(&qtdLinhas, 1, MPI_INT, 0, 0, MPI_COMM_WORLD, &status);
-
-    // RECEIVE-LINHAS M1
-    MPI_Recv(&m1[numLinha][0], qtdLinhas * SIZE, MPI_INT, 0, 0, MPI_COMM_WORLD, &status);
+    MPI_Recv(&linhaInicialDoProcesso, 1, MPI_INT, 0, 0, MPI_COMM_WORLD, &status);
+    MPI_Recv(&numeroDeLinhasPorProcesso, 1, MPI_INT, 0, 0, MPI_COMM_WORLD, &status);
+    MPI_Recv(&m1[linhaInicialDoProcesso][0], numeroDeLinhasPorProcesso * SIZE, MPI_INT, 0, 0, MPI_COMM_WORLD, &status);
 
     // REALIZA A MULTIPLICACAO
-    for (int i = numLinha; i < numLinha + qtdLinhas; i++)
+    for (int i = linhaInicialDoProcesso; i < linhaInicialDoProcesso + numeroDeLinhasPorProcesso; i++)
     {
       for (int j = 0; j < cres; j++)
       {
@@ -153,14 +149,9 @@ int main(int argc, char *argv[]) {
       }
     }
 
-    // SEND-NUMERO DA LINHA A COMECAR
     MPI_Send(&numLinha, 1, MPI_INT, 0, 0, MPI_COMM_WORLD);
-
-    // SEND-QUANTIDADE DE LINHAS A PROCESSAR
-    MPI_Send(&qtdLinhas, 1, MPI_INT, 0, 0, MPI_COMM_WORLD);
-
-    // SEND-LINHAS M RESULTANTE
-    MPI_Send(&mres[numLinha][0], qtdLinhas * SIZE, MPI_INT, 0, 0, MPI_COMM_WORLD);
+    MPI_Send(&numeroDeLinhasPorProcesso, 1, MPI_INT, 0, 0, MPI_COMM_WORLD);
+    MPI_Send(&mres[linhaInicialDoProcesso][0], numeroDeLinhasPorProcesso * SIZE, MPI_INT, 0, 0, MPI_COMM_WORLD);
   }
   MPI_Finalize();
   return 0;
