@@ -2,43 +2,46 @@
 #include <stdlib.h>
 #include <mpi.h>
 
+#define MESTRE 0
+
 // DADOS COMPARTILHADOS
-int m1[SIZE][SIZE],m2[SIZE][SIZE],mres[SIZE][SIZE];
+int m1[SIZE][SIZE], m2[SIZE][SIZE], mres[SIZE][SIZE];
 int l1, c1, l2, c2, lres, cres;
+int tamanhoMatriz = SIZE * SIZE;
 
-int main(int argc, char *argv[]) {
-  int    i, j, k, id, p;
+int main(int argc, char *argv[])
+{
+  int id, p, hostsize;
+  char hostname[MPI_MAX_PROCESSOR_NAME];
   double elapsed_time;
-
   MPI_Status status;
 
   MPI_Init(&argc, &argv);
   MPI_Comm_size(MPI_COMM_WORLD, &p);
   MPI_Comm_rank(MPI_COMM_WORLD, &id);
-  /* Só faz sentido na versão sequencial
-  if (id != 0) {
-      MPI_Finalize();
-      exit(0);
-  }
-  */
+  MPI_Get_processor_name(hostname, &hostsize);
 
   // INICIALIZA OS ARRAYS A SEREM MULTIPLICADOS.
   l1 = c1 = SIZE;
   l2 = c2 = SIZE;
-  if (c1 != l2) {
+  if (c1 != l2)
+  {
     fprintf(stderr, "Impossivel multiplicar matrizes: parametros invalidos.\n");
     return 1;
   }
   lres = l1;
   cres = c2;
 
-  // Verificar se é 0 para saber se é o mestre
-  if (id == 0) {
-    // Se for o mestre, precisa fazer o trabalho inicial de preencher as matrizes
+  // MESTRE.
+  if (id == MESTRE)
+  {
+    // Popula as matrizes.
     int k = 1;
-    for (i=0; i<SIZE; i++) {
-      for (j=0 ; j<SIZE; j++) {
-        if (k%2==0)
+    for (int i = 0; i < SIZE; i++)
+    {
+      for (int j = 0; j < SIZE; j++)
+      {
+        if (k % 2 == 0)
           m1[i][j] = -k;
         else
           m1[i][j] = k;
@@ -46,37 +49,47 @@ int main(int argc, char *argv[]) {
       k++;
     }
     k = 1;
-    for (j=0 ; j<SIZE; j++) {
-        for (i=0 ; i<SIZE; i++) {
-	        if (k%2==0)
-               m2[i][j] = -k;
-	        else
-               m2[i][j] = k;
-        }
-        k++;
+    for (int j = 0; j < SIZE; j++)
+    {
+      for (int i = 0; i < SIZE; i++)
+      {
+        if (k % 2 == 0)
+          m2[i][j] = -k;
+        else
+          m2[i][j] = k;
+      }
+      k++;
     }
 
     // PREPARA PARA MEDIR TEMPO
+    // Comeca a contar depois que as matrizes estao populadas.
     elapsed_time = -MPI_Wtime();
 
-    // Todos os escravos precisam ter uma das matrizes completas, escolhemos mandar a M2
-    MPI_Bcast(m2, pow(SIZE,2), MPI_INT, 0, MPI_COMM_WORLD);
+    // BROADCAST PARA ENVIAR A MATRIZ 2 INTEIRA PARA TODOS OS ESCRAVOS
+    MPI_Bcast(m2, tamanhoMatriz, MPI_INT, MESTRE, MPI_COMM_WORLD);
 
     // Loop para enviar partes da matriz 1 para os escravos.
-    for (i = 1; i < p; ++i) {
-      int idEscravo = i; 
+    for (int i = 0; i < p - 1; ++i)
+    {
+      int idEscravo = i + 1;
+      int idUltimoEscravo = p - 2;
 
-      int numeroDeLinhasPorProcesso = SIZE / (p - 1);
-      int linhaInicialDoProcesso = i * qtdLinhas;
-      if (i == (p - 1)) { //Verificar se é o último processo a ser enviado os dados
-        //Mandar somente o "resto", linhas restantes para o último
-        numeroDeLinhasPorProcesso += SIZE % (p - 1);
+      int qtdLinhas = SIZE / (p - 1);
+      int numLinha = i * qtdLinhas;
+      if (i == idUltimoEscravo)
+      {
+        // Se for o ultimo escravo, envia as linhas restantes.
+        qtdLinhas += SIZE % (p - 1);
       }
 
-      // Enviar a linha que o processo deve começar a calcular, a quantidade de linhas e as linhas da matriz
-      MPI_Send(&linhaInicialDoProcesso, 1, MPI_INT, idEscravo, 0, MPI_COMM_WORLD);
-      MPI_Send(&numeroDeLinhasPorProcesso, 1, MPI_INT, idEscravo, 0, MPI_COMM_WORLD);
-      MPI_Send(&m1[linhaInicialDoProcesso][0], numeroDeLinhasPorProcesso * SIZE, MPI_INT, idEscravo, 0, MPI_COMM_WORLD);
+      // SEND-NUMERO DA LINHA A COMECAR
+      MPI_Send(&numLinha, 1, MPI_INT, idEscravo, 0, MPI_COMM_WORLD);
+
+      // SEND-QUANTIDADE DE LINHAS A PROCESSAR
+      MPI_Send(&qtdLinhas, 1, MPI_INT, idEscravo, 0, MPI_COMM_WORLD);
+
+      // SEND-LINHAS M1
+      MPI_Send(&m1[numLinha][0], qtdLinhas * SIZE, MPI_INT, idEscravo, 0, MPI_COMM_WORLD);
     }
 
     for (int i = 0; i < p - 1; ++i)
