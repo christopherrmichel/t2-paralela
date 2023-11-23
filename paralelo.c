@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <mpi.h>
+#include <math.h>
 
 // DADOS COMPARTILHADOS
 int m1[SIZE][SIZE],m2[SIZE][SIZE],mres[SIZE][SIZE];
@@ -67,7 +68,7 @@ int main(int argc, char *argv[]) {
       int idEscravo = i; 
 
       int numeroDeLinhasPorProcesso = SIZE / (p - 1);
-      int linhaInicialDoProcesso = i * qtdLinhas;
+      int linhaInicialDoProcesso = i * numeroDeLinhasPorProcesso;
       if (i == (p - 1)) { //Verificar se é o último processo a ser enviado os dados
         //Mandar somente o "resto", linhas restantes para o último
         numeroDeLinhasPorProcesso += SIZE % (p - 1);
@@ -143,18 +144,18 @@ int main(int argc, char *argv[]) {
   else
   {
     // Recebe a matriz 2 inteira.
-    MPI_Bcast(m2, tamanhoMatriz, MPI_INT, MESTRE, MPI_COMM_WORLD);
+    MPI_Bcast(m2, pow(SIZE,2), MPI_INT, 0, MPI_COMM_WORLD);
 
     int qtdLinhas, numLinha;
 
     // RECEIVE-NUMERO DA LINHA A COMECAR
-    MPI_Recv(&numLinha, 1, MPI_INT, MESTRE, 0, MPI_COMM_WORLD, &status);
+    MPI_Recv(&numLinha, 1, MPI_INT, 0, 0, MPI_COMM_WORLD, &status);
 
     // RECEIVE-QUANTIDADE DE LINHAS A PROCESSAR
-    MPI_Recv(&qtdLinhas, 1, MPI_INT, MESTRE, 0, MPI_COMM_WORLD, &status);
+    MPI_Recv(&qtdLinhas, 1, MPI_INT, 0, 0, MPI_COMM_WORLD, &status);
 
     // RECEIVE-LINHAS M1
-    MPI_Recv(&m1[numLinha][0], qtdLinhas * SIZE, MPI_INT, MESTRE, 0, MPI_COMM_WORLD, &status);
+    MPI_Recv(&m1[numLinha][0], qtdLinhas * SIZE, MPI_INT, 0, 0, MPI_COMM_WORLD, &status);
 
     // REALIZA A MULTIPLICACAO
     // Utiliza OpenMP para paralelizar o loop.
@@ -172,13 +173,13 @@ int main(int argc, char *argv[]) {
     }
 
     // SEND-NUMERO DA LINHA A COMECAR
-    MPI_Send(&numLinha, 1, MPI_INT, MESTRE, 0, MPI_COMM_WORLD);
+    MPI_Send(&numLinha, 1, MPI_INT, 0, 0, MPI_COMM_WORLD);
 
     // SEND-QUANTIDADE DE LINHAS A PROCESSAR
-    MPI_Send(&qtdLinhas, 1, MPI_INT, MESTRE, 0, MPI_COMM_WORLD);
+    MPI_Send(&qtdLinhas, 1, MPI_INT, 0, 0, MPI_COMM_WORLD);
 
     // SEND-LINHAS M RESULTANTE
-    MPI_Send(&mres[numLinha][0], qtdLinhas * SIZE, MPI_INT, MESTRE, 0, MPI_COMM_WORLD);
+    MPI_Send(&mres[numLinha][0], qtdLinhas * SIZE, MPI_INT, 0, 0, MPI_COMM_WORLD);
   }
 
   MPI_Finalize();
