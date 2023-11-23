@@ -73,7 +73,7 @@ echo ################
 ############# Commands...
 
 echo "3 nodos, 1 processo mestre, 3 processos escravos."
-mpirun -np 3 --map-by node ./versao-paralela2 >> output-versao-paralela.txt 2>> errors-versao-paralela.txt
+mpirun -np 3 --map-by node ./versao-paralela >> output-versao-paralela.txt 2>> errors-versao-paralela.txt
 
 ################
 
