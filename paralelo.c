@@ -99,43 +99,31 @@ int main(int argc, char *argv[]) {
     printf("Valor inicial: %d - valor final: %d\n", mres[0][0], mres[SIZE][SIZE]);
 
     // VERIFICA SE O RESULTADO DA MULTIPLICACAO ESTA CORRETO
-    for (int i = 0; i < SIZE; i++)
-    {
-      int k = SIZE * (i + 1);
-      for (int j = 0; j < SIZE; j++)
-      {
-        int k_col = k * (j + 1);
-        if (i % 2 == 0)
-        {
-          if (j % 2 == 0)
-          {
-            if (mres[i][j] != k_col)
-              printf("\nERRO validando matriz resultante: %d != %d", mres[i][j], k_col);
-              return 1;
+    for (i=0 ; i<SIZE; i++) {
+      k = SIZE*(i+1);
+      for (j=0 ; j<SIZE; j++) {
+          int k_col = k*(j+1);
+          if (i % 2 ==0) {
+             if (j % 2 == 0) {
+                if (mres[i][j]!=k_col)
+                   return 1;
+             }
+             else {
+                if (mres[i][j]!=-k_col)
+                   return 1;
+             }
           }
-          else
-          {
-            if (mres[i][j] != -k_col)
-              printf("\nERRO validando matriz resultante: %d != %d", mres[i][j], -k_col);
-              return 1;
+          else {
+             if (j % 2 == 0) {
+                if (mres[i][j]!=-k_col)
+                   return 1;
+             }
+             else {
+                if (mres[i][j]!=k_col)
+                   return 1;
+             }
           }
-        }
-        else
-        {
-          if (j % 2 == 0)
-          {
-            if (mres[i][j] != -k_col)
-              printf("\nERRO validando matriz resultante: %d != %d", mres[i][j], -k_col);
-              return 1;
-          }
-          else
-          {
-            if (mres[i][j] != k_col)
-              printf("\nERRO validando matriz resultante: %d != %d", mres[i][j], k_col);
-              return 1;
-          }
-        }
-      }
+      } 
     }
   }
   // ESCRAVO
