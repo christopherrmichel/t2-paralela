@@ -64,16 +64,13 @@ int main(int argc, char *argv[]) {
     MPI_Bcast(m2, pow(SIZE,2), MPI_INT, 0, MPI_COMM_WORLD);
 
     // Loop para enviar partes da matriz 1 para os escravos.
-    for (int i = 0; i < p - 1; ++i)
-    {
-      int idEscravo = i + 1;
-      int idUltimoEscravo = p - 2;
+    for (i = 1; i < p; ++i) {
+      int idEscravo = i; 
 
       int numeroDeLinhasPorProcesso = SIZE / (p - 1);
       int linhaInicialDoProcesso = i * numeroDeLinhasPorProcesso;
-      if (i == idUltimoEscravo)
-      {
-        // Se for o ultimo escravo, envia as linhas restantes.
+      if (i == (p - 1)) { //Verificar se é o último processo a ser enviado os dados
+        //Mandar somente o "resto", linhas restantes para o último
         numeroDeLinhasPorProcesso += SIZE % (p - 1);
       }
 
