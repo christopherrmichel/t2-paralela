@@ -96,6 +96,7 @@ int main(int argc, char *argv[]) {
     // Para de contar depois que a matriz resultante esta pronta.
     elapsed_time += MPI_Wtime();
     printf("%d - %lf\n", SIZE, elapsed_time);
+    printf("Valor inicial: %d - valor final: %d\n", mres[0][0], mres[SIZE][SIZE]);
 
     // VERIFICA SE O RESULTADO DA MULTIPLICACAO ESTA CORRETO
     for (int i = 0; i < SIZE; i++)
