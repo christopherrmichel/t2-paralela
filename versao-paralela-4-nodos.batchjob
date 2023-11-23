@@ -10,7 +10,7 @@
 
 ################ Change these parameters according to your requisites
 # nodes and tasks
-#SBATCH --nodes 3
+#SBATCH --nodes 2
 
 # time
 #SBATCH -t 10
@@ -55,7 +55,7 @@
 
 ################ Please, change this directory to your working dir.
 
-#SBATCH -D /home/pp03003/t2-paralela
+#SBATCH -D /home/pp03001/t2-paralela
 
 ################
 
@@ -66,14 +66,17 @@ echo Initial Time is `date`
 echo
 echo Directory is `pwd`
 echo
+echo This jobs runs on the following nodes:
+echo $SLURM_JOB_NODELIST
+echo
 echo JOB_ID:
 echo $SLURM_JOBID
 echo ################
 
 ############# Commands...
 
-echo "4 nodos, 1 processo mestre, 3 processos escravos."
-mpirun -np 4 --map-by node ./versao-paralela >> output-versao-paralela.txt 2>> errors-versao-paralela.txt
+echo "2 nodos, 1 processo mestre, 2 processos escravos, um usando 15 threads e o outro usando 16 threads."
+mpirun -np 3 --map-by node ./versao-paralela >> output-paralelo.txt 2>> errors-paralelo.txt
 
 ################
 
