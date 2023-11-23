@@ -10,14 +10,14 @@
 
 ################ Change these parameters according to your requisites
 # nodes and tasks
-#SBATCH --nodes 3
+#SBATCH --nodes 2
 
 # time
 #SBATCH -t 10
 # time formats =  "minutes", "minutes:seconds", "hours:minutes:seconds", "days-hours", "days-hours:minutes" and "days-hours:minutes:seconds"
 
 # Exclusive (alloc all threads from each node) or shared (alloc only threads set by "-n" parameter)
-#SBATCH --exclusive
+SBATCH --exclusive
 ##SBATCH --shared
 
 ################ Please, change this e-mail address to yours
@@ -72,8 +72,8 @@ echo ################
 
 ############# Commands...
 
-echo "4 nodos, 1 processo mestre, 3 processos escravos."
-mpirun -np 4 --map-by node ./paralelo >> output-paralelo.txt 2>> errors-paralelo.txt
+echo "2 nodos, 1 processo mestre, 2 processos escravos."
+mpirun -np 2 --map-by node ./versao-paralela >> output-versao-paralela.txt 2>> errors-versao-paralela.txt
 
 ################
 

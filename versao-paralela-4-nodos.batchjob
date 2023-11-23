@@ -10,7 +10,7 @@
 
 ################ Change these parameters according to your requisites
 # nodes and tasks
-#SBATCH --nodes 2
+#SBATCH --nodes 3
 
 # time
 #SBATCH -t 10
@@ -72,8 +72,8 @@ echo ################
 
 ############# Commands...
 
-echo "2 nodos, 1 processo mestre, 2 processos escravos."
-mpirun -np 2 --map-by node ./paralelo >> output-paralelo.txt 2>> errors-paralelo.txt
+echo "4 nodos, 1 processo mestre, 3 processos escravos."
+mpirun -np 4 --map-by node ./versao-paralela >> output-versao-paralela.txt 2>> errors-versao-paralela.txt
 
 ################
 

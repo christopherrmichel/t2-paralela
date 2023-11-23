@@ -94,7 +94,6 @@ int main(int argc, char *argv[]) {
     // OBTEM O TEMPO
     elapsed_time += MPI_Wtime();
     printf("%d - %lf\n", SIZE, elapsed_time);
-    printf("Valor inicial: %d - valor final: %d\n", mres[0][0], mres[SIZE][SIZE]);
 
     // VERIFICA SE O RESULTADO DA MULTIPLICACAO ESTA CORRETO
     for (i=0 ; i<SIZE; i++) {
