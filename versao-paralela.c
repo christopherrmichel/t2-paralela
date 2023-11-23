@@ -166,7 +166,7 @@ int main(int argc, char *argv[]) {
     MPI_Recv(&qtdLinhas, 1, MPI_INT, 0, 0, MPI_COMM_WORLD, &status);
 
     // RECEIVE-LINHAS M1
-    MPI_Recv(&m1[numLinha][0], qtdLinhas * SIZE, MPI_INT, MESTRE, 0, MPI_COMM_WORLD, &status);
+    MPI_Recv(&m1[numLinha][0], qtdLinhas * SIZE, MPI_INT, 0, 0, MPI_COMM_WORLD, &status);
 
     // REALIZA A MULTIPLICACAO
     // Utiliza OpenMP para paralelizar o loop.
