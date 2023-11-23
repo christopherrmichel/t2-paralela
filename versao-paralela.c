@@ -124,8 +124,7 @@ int main(int argc, char *argv[]) {
     }
   }
   // Se for diferente de 0, significa que o processo é um escravo
-    else
-  {
+  else {
     // Recebe a matriz 2 inteira.
     MPI_Bcast(m2, (SIZE * SIZE), MPI_INT, 0, MPI_COMM_WORLD);
 
@@ -137,13 +136,10 @@ int main(int argc, char *argv[]) {
     MPI_Recv(&m1[linhaInicialDoProcesso][0], numeroDeLinhasPorProcesso * SIZE, MPI_INT, 0, 0, MPI_COMM_WORLD, &status);
 
     // REALIZA A MULTIPLICACAO
-    for (int i = linhaInicialDoProcesso; i < linhaInicialDoProcesso + numeroDeLinhasPorProcesso; i++)
-    {
-      for (int j = 0; j < cres; j++)
-      {
+    for (int i = linhaInicialDoProcesso; i < linhaInicialDoProcesso + numeroDeLinhasPorProcesso; i++) {
+      for (int j = 0; j < cres; j++) {
         mres[i][j] = 0;
-        for (int k = 0; k < c1; k++)
-        {
+        for (int k = 0; k < c1; k++) {
           mres[i][j] += m1[i][k] * m2[k][j];
         }
       }
