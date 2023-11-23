@@ -149,7 +149,7 @@ int main(int argc, char *argv[]) {
     //Após o cálculo, envia para o mestre a linha que o escravo começou a calcular, a quantidade de linhas calculadas e pedaço da matriz resultante
     MPI_Send(&linhaInicialDoProcesso, 1, MPI_INT, 0, 0, MPI_COMM_WORLD);
     MPI_Send(&numeroDeLinhasPorProcesso, 1, MPI_INT, 0, 0, MPI_COMM_WORLD);
-    MPI_Send(&mres[numLinha][0], qtdLinhas * SIZE, MPI_INT, 0, 0, MPI_COMM_WORLD);
+    MPI_Send(&mres[linhaInicialDoProcesso][0], numeroDeLinhasPorProcesso * SIZE, MPI_INT, 0, 0, MPI_COMM_WORLD);
   }
 
   MPI_Finalize();
