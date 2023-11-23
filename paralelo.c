@@ -8,9 +8,8 @@ int m1[SIZE][SIZE],m2[SIZE][SIZE],mres[SIZE][SIZE];
 int l1, c1, l2, c2, lres, cres;
 
 int main(int argc, char *argv[]) {
-  int    i, j, k, id, p;
+  int i, j, k, id, p;
   double elapsed_time;
-
   MPI_Status status;
 
   MPI_Init(&argc, &argv);
@@ -60,10 +59,10 @@ int main(int argc, char *argv[]) {
     // PREPARA PARA MEDIR TEMPO
     elapsed_time = -MPI_Wtime();
 
-    // Todos os escravos precisam ter uma das matrizes completas, escolhemos mandar a M2
+    //Todos os escravos precisam ter uma das matrizes completas, escolhemos mandar a M2
     MPI_Bcast(m2, pow(SIZE,2), MPI_INT, 0, MPI_COMM_WORLD);
 
-    // Loop para enviar partes da matriz 1 para os escravos.
+    //Enviar parte da m1 para os escravos
     for (i = 1; i < p; ++i) {
       int idEscravo = i; 
 
@@ -80,19 +79,17 @@ int main(int argc, char *argv[]) {
       MPI_Send(&m1[linhaInicialDoProcesso][0], numeroDeLinhasPorProcesso * SIZE, MPI_INT, idEscravo, 0, MPI_COMM_WORLD);
     }
 
-    for (int i = 0; i < p - 1; ++i)
+    //For para pegar os retornos após o cálculos em cada escravo
+    for (int i = 1; i < p; ++i)
     {
-      int numLinha, qtdLinhas;
+      int numeroDeLinhasPorProcesso;
+      int linhaInicialDoProcesso;
 
-      // RECEIVE-NUMERO DA LINHA A COMECAR
-      MPI_Recv(&numLinha, 1, MPI_INT, MPI_ANY_SOURCE, 0, MPI_COMM_WORLD, &status);
-      int source = status.MPI_SOURCE;
-
-      // RECEIVE-QUANTIDADE DE LINHAS A PROCESSAR
-      MPI_Recv(&qtdLinhas, 1, MPI_INT, source, 0, MPI_COMM_WORLD, &status);
-      
-      // RECEIVE-LINHAS M RESULTANTE
-      MPI_Recv(&mres[numLinha][0], qtdLinhas * SIZE, MPI_INT, source, 0, MPI_COMM_WORLD, &status);
+      //Usando o MPI_Recv para receber primeiro o numero da linha do intervalo que foi calculado
+      //Segundo a quantidade de linhas que vai ser fornecida no retorno e terceiro os valores da matriz resultante
+      MPI_Recv(&linhaInicialDoProcesso, 1, MPI_INT, MPI_ANY_SOURCE, 0, MPI_COMM_WORLD, &status);
+      MPI_Recv(&numeroDeLinhasPorProcesso, 1, MPI_INT, status.MPI_SOURCE, 0, MPI_COMM_WORLD, &status);
+      MPI_Recv(&mres[linhaInicialDoProcesso][0], numeroDeLinhasPorProcesso * SIZE, MPI_INT, status.MPI_SOURCE, 0, MPI_COMM_WORLD, &status);
     }
 
     // OBTEM O TEMPO

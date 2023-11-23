@@ -68,7 +68,7 @@ int main(int argc, char *argv[]) {
       int idEscravo = i; 
 
       int numeroDeLinhasPorProcesso = SIZE / (p - 1);
-      int linhaInicialDoProcesso = i * numeroDeLinhasPorProcesso;
+      int linhaInicialDoProcesso = (i-1) * numeroDeLinhasPorProcesso;
       if (i == (p - 1)) { //Verificar se é o último processo a ser enviado os dados
         //Mandar somente o "resto", linhas restantes para o último
         numeroDeLinhasPorProcesso += SIZE % (p - 1);
