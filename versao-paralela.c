@@ -149,7 +149,7 @@ int main(int argc, char *argv[]) {
       }
     }
 
-    MPI_Send(&numLinha, 1, MPI_INT, 0, 0, MPI_COMM_WORLD);
+    MPI_Send(&linhaInicialDoProcesso, 1, MPI_INT, 0, 0, MPI_COMM_WORLD);
     MPI_Send(&numeroDeLinhasPorProcesso, 1, MPI_INT, 0, 0, MPI_COMM_WORLD);
     MPI_Send(&mres[linhaInicialDoProcesso][0], numeroDeLinhasPorProcesso * SIZE, MPI_INT, 0, 0, MPI_COMM_WORLD);
   }
