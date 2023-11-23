@@ -125,12 +125,13 @@ int main(int argc, char *argv[]) {
   }
   // Se for diferente de 0, significa que o processo é um escravo
   else {
-    // Recebe a matriz 2 inteira.
+    //Recebe a matriz 2 por broadcast
     MPI_Bcast(m2, (SIZE * SIZE), MPI_INT, 0, MPI_COMM_WORLD);
 
     int numeroDeLinhasPorProcesso;
     int linhaInicialDoProcesso;
 
+    //Recebe em qual linha deve começar na matriz 1, número de linhas que deve trabalhar e as linhas da matriz 1
     MPI_Recv(&linhaInicialDoProcesso, 1, MPI_INT, 0, 0, MPI_COMM_WORLD, &status);
     MPI_Recv(&numeroDeLinhasPorProcesso, 1, MPI_INT, 0, 0, MPI_COMM_WORLD, &status);
     MPI_Recv(&m1[linhaInicialDoProcesso][0], numeroDeLinhasPorProcesso * SIZE, MPI_INT, 0, 0, MPI_COMM_WORLD, &status);
@@ -144,7 +145,7 @@ int main(int argc, char *argv[]) {
         }
       }
     }
-
+    //Envia a linha que começou a trabalhar, a quantidade de linhas que trabalhou e as linhas da matriz resultante
     MPI_Send(&linhaInicialDoProcesso, 1, MPI_INT, 0, 0, MPI_COMM_WORLD);
     MPI_Send(&numeroDeLinhasPorProcesso, 1, MPI_INT, 0, 0, MPI_COMM_WORLD);
     MPI_Send(&mres[linhaInicialDoProcesso][0], numeroDeLinhasPorProcesso * SIZE, MPI_INT, 0, 0, MPI_COMM_WORLD);
