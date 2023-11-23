@@ -141,8 +141,6 @@ int main(int argc, char *argv[]) {
     MPI_Recv(&m1[numLinha][0], qtdLinhas * SIZE, MPI_INT, 0, 0, MPI_COMM_WORLD, &status);
 
     // REALIZA A MULTIPLICACAO
-    // Utiliza OpenMP para paralelizar o loop.
-#pragma omp parallel for
     for (int i = numLinha; i < numLinha + qtdLinhas; i++)
     {
       for (int j = 0; j < cres; j++)
